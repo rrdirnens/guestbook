@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <div class="container">
+    <div class="container text-xl">
         <h1 class="red">Home</h1>
         <p>hi there</p>
     </div>
