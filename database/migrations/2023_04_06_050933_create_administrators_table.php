@@ -14,10 +14,9 @@ return new class extends Migration
         Schema::create('administrators', function (Blueprint $table) {
             $table->id();
             $table->string('name', 255)->nullable(false);
-            $table->string('email', 255)->nullable(false);
+            $table->string('email', 255)->unique()->nullable(false);
             $table->string('password', 255)->nullable(false);
-            $table->timestamp('created_at')->nullable(false)->useCurrent();
-            $table->timestamp('updated_at')->nullable()->useCurrent();
+            $table->timestamps();
         });
     }
 

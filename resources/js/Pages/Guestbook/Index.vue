@@ -1,15 +1,17 @@
 <template>
-    <div>
+    <div class="bg-white shadow-md rounded-lg p-6 mx-auto my-auto max-w-lg">
         <guestbook-form></guestbook-form>
         <message-table :messages="messages" @sort="sortMessages"></message-table>
-        <pagination :pagination="pagination" @change-page="fetchMessages"></pagination>
+        <pagination v-if="pagination" :pagination="pagination" @change-page="fetchMessages"></pagination>
     </div>
 </template>
-  
+
 <script>
 import GuestbookForm from "./GuestbookForm.vue";
 import MessageTable from "./MessageTable.vue";
 import Pagination from "./Pagination.vue";
+import { reactive, toRefs, watchEffect } from "vue";
+import { usePage } from "@inertiajs/vue3";
 import { router } from "@inertiajs/vue3";
 
 export default {
@@ -18,21 +20,31 @@ export default {
         MessageTable,
         Pagination,
     },
-    props: {
-        messages: {
-            type: Object,
-            default: () => ({}),
-        },
-        pagination: Object,
-    },
-    methods: {
-        sortMessages(field) {
-            router.get("/guestbook", { sort: field });
-        },
-        fetchMessages(url) {
-            router.visit(url);
-        },
+    setup() {
+        const { props } = usePage();
+        const state = reactive({
+            messages: props.messages,
+            pagination: props.pagination,
+        });
+
+        watchEffect(() => {
+            console.log("messages: "+state.messages);
+            console.log("pagination: "+state.pagination); // This is undefined
+        });
+
+        async function fetchMessagesHandler(url) {
+            const { data } = await router.get(url);
+            state.messages = data.messages;
+            console.log(data.messages);
+            console.log(data.pagination);
+            state.pagination = data.pagination;
+        }
+
+        function sortMessages(field) {
+            fetchMessagesHandler(`/guestbook?sort=${field}`);
+        }
+
+        return { ...toRefs(state), fetchMessagesHandler, sortMessages, fetchMessages: fetchMessagesHandler };
     },
 };
 </script>
-  

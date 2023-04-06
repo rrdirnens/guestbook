@@ -20,7 +20,7 @@ class GuestbookController extends Controller
             ->paginate(10);
     
         return Inertia::render('Guestbook/Index', [
-            'messages' => $messages,
+            'messages' => $messages->items(),
         ]);
     }
 
@@ -42,6 +42,9 @@ class GuestbookController extends Controller
         ]);
 
         if ($validator->fails()) {
+            dump($validator->errors());
+            dd('failed validation');
+
             return redirect()->back()->withErrors($validator)->withInput();
         }
 

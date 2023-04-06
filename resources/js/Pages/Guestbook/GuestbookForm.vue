@@ -1,5 +1,5 @@
 <template>
-    <form class="space-y-4" @submit.prevent="submitForm">
+    <form class="space-y-4 mb-8" @submit.prevent="submitForm">
       <!-- Name -->
       <div>
         <label for="name" class="block text-sm font-medium text-gray-700">Name:</label>
@@ -46,7 +46,7 @@
       });
   
       function onFileChange(event) {
-        formData.image = event.target.files[0];
+        formData.value.image = event.target.files[0];
       }
   
     //   function onCaptchaVerify(response) {
@@ -58,7 +58,9 @@
     //   }
   
       function submitForm() {
-        router.post("/guestbook", formData);
+        console.log(formData.value);
+        console.log(formData);
+        router.post('/guestbook', formData);
       }
   
       return {

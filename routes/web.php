@@ -1,9 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\GuestbookController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+
 
 
 /*
@@ -32,3 +34,12 @@ Route::post('/guestbook', [GuestbookController::class, 'store'])->name('guestboo
 Route::get('/guestbook/{id}/edit', [GuestbookController::class, 'edit'])->name('guestbook.edit');
 Route::put('/guestbook/{id}', [GuestbookController::class, 'update'])->name('guestbook.update');
 Route::delete('/guestbook/{id}', [GuestbookController::class, 'destroy'])->name('guestbook.destroy');
+
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::get('/admin', [UserController::class, 'index'])->name('admin.index');
+    Route::get('/admin/create', [UserController::class, 'create'])->name('admin.create');
+    Route::post('/admin', [UserController::class, 'store'])->name('admin.store');
+    Route::get('/admin/{administrator}/edit', [UserController::class, 'edit'])->name('admin.edit');
+    Route::put('/admin/{administrator}', [UserController::class, 'update'])->name('admin.update');
+    Route::delete('/admin/{administrator}', [UserController::class, 'destroy'])->name('admin.destroy');
+});

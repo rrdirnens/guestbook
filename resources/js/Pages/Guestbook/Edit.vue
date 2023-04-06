@@ -18,7 +18,7 @@ export default {
     },
     methods: {
         handleSubmit() {
-            this.$inertia.put(`/guestbook/${this.message.id}`, this.form);
+            this.$inertia.put(`/guestbook/${this.message.id}`, this.formData);
         },
     },
 };

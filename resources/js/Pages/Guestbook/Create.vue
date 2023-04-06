@@ -5,7 +5,6 @@
         :formAction="'/guestbook'"
         :formMethod="'post'"
         :submitText="'Submit'"
-        @submit="handleSubmit"
       />
     </div>
   </template>
@@ -16,11 +15,6 @@
   export default {
     components: {
       GuestbookForm,
-    },
-    methods: {
-      handleSubmit() {
-        this.$inertia.post('/guestbook', this.form);
-      },
     },
   };
   </script>
