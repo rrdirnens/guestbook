@@ -42,9 +42,6 @@ class GuestbookController extends Controller
         ]);
 
         if ($validator->fails()) {
-            dump($validator->errors());
-            dd('failed validation');
-
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
