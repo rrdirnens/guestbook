@@ -18,16 +18,17 @@
           <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">Login</button>
         </form>
         <p class="text-center">
-          <router-link :to="{ name: 'password.request' }" class="text-blue-500 hover:text-blue-700">Forgot your password?</router-link>
+          <Link class="text-blue-500 hover:text-blue-700" href="/password/reset">Forgot your password?</Link>
         </p>
       </div>
     </div>
   </template>
   
   <script>
-  import { useForm } from '@inertiajs/vue3';
+  import { useForm, Link } from '@inertiajs/vue3';
   
   export default {
+    components: { Link },
     setup() {
       const form = useForm({
         email: '',

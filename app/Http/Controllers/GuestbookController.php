@@ -5,20 +5,21 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use App\Models\GuestbookMessage;
+use Event;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class GuestbookController extends Controller
 {
     // Display a listing of guestbook messages
-    public function index(Request $request)
+    public function index(Request $request,)
     {
-        $sortField = $request->input('sort', 'created_at');
-        $sortDirection = $request->input('direction', 'desc');
-    
+        $sortField = $request->input('sort', 'created_at'); // default sort field is created_at
+        $sortDirection = $request->input('direction', 'desc'); // default sort direction is desc
+
         $messages = GuestbookMessage::orderBy($sortField, $sortDirection)
             ->paginate(10);
-    
+
         return Inertia::render('Guestbook/Index', [
             'messages' => $messages->items(),
         ]);
@@ -38,7 +39,6 @@ class GuestbookController extends Controller
             'email' => 'required|email|max:255',
             'message' => 'required|max:1000',
             'image' => 'nullable|image|max:4096|mimes:jpg,jpeg,png',
-            // 'captcha' => 'required|captcha',
         ]);
 
         if ($validator->fails()) {
