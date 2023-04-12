@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use App\Models\GuestbookMessage;
-use Event;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Event;
 
 class GuestbookController extends Controller
 {
@@ -34,6 +35,8 @@ class GuestbookController extends Controller
     // Store a newly created guestbook message in storage
     public function store(Request $request)
     {
+        Log::info('store function triggered:', $request->all());
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
             'email' => 'required|email|max:255',
@@ -42,6 +45,7 @@ class GuestbookController extends Controller
         ]);
 
         if ($validator->fails()) {
+            Log::info('Validation failed:', $validator->errors()->all());
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
@@ -52,11 +56,15 @@ class GuestbookController extends Controller
         $message->message = $request->input('message');
         $message->ip_address = $request->ip();
 
+        Log::info('Request data:', $request->all());
+        Log::info('Validator instance:', $validator->errors()->all());
+        Log::info('Message instance:', $message->toArray());
+
         // The image is optional. If an image is uploaded, store it and set the image_path attribute
         if ($request->hasFile('image')) {
+            Log::info('Image uploaded:', ['image' => $request->file('image')]);
             $path = $request->file('image')->store('public/guestbook_images');
             $message->image_path = Storage::url($path);
-            $message->image_caption = $request->input('image_caption');
         }
 
         $message->save();
@@ -77,6 +85,7 @@ class GuestbookController extends Controller
     // Update the specified guestbook message in storage
     public function update(Request $request, $id)
     {
+        Log::info('Update function triggered, request:', $request->all());
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
             'email' => 'required|email|max:255',
@@ -86,7 +95,14 @@ class GuestbookController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+            $errors = $validator->errors();
+            $input = $request->all();
+
+            return Inertia::render('Guestbook/Edit', [
+                'message' => GuestbookMessage::findOrFail($id),
+                'errors' => $errors,
+                'input' => $input,
+            ])->withViewData(['errors' => $errors, 'input' => $input]);
         }
 
         $message = GuestbookMessage::findOrFail($id);

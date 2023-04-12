@@ -27,6 +27,8 @@ export default {
         });
 
         watchEffect(() => {
+            console.log('watchEffect state.messages: ');
+            console.log(props.messages);
         });
 
         async function fetchMessagesHandler(url) {

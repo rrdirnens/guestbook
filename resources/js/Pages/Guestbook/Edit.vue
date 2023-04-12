@@ -1,8 +1,9 @@
 <template>
-    <div class="bg-white shadow-md rounded-lg p-6">
+    <div class="bg-white shadow-md rounded-lg p-6 mx-auto my-auto max-w-lg">
         <h2 class="text-2xl font-semibold mb-6">Edit message</h2>
         <GuestbookForm :formAction="`/guestbook/${message.id}`" :formMethod="'put'" :submitText="'Update'"
-            :initialMessage="message" @submit="handleSubmit" />
+            :initialMessage="message" :errors="errors" :input="input" @submit="handleSubmit" />
+            {{ message }}
     </div>
 </template>
   
@@ -15,6 +16,8 @@ export default {
     },
     props: {
         message: Object,
+        errors: Object,
+        input: Object,
     },
     methods: {
         handleSubmit() {

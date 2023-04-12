@@ -16,18 +16,6 @@ class GuestbookMessage extends Model
         'email',
         'message',
         'image_path',
-        'image_caption',
         'ip_address',
     ];
-
-    protected $appends = [
-        'image_url',
-    ];
-
-    public function getImageUrlAttribute()
-    {
-        if ($this->image_path) {
-            return Storage::url($this->image_path);
-        }
-    }
 }

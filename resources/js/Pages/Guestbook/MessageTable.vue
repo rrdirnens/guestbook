@@ -15,8 +15,13 @@
                 <td class="p-2">{{ message.created_at }}</td>
                 <td class="p-2">
                     {{ message.message }}
-                    <img v-if="message.image_path" :src="message.image_path" @click="openImage(message.image_path)"
-                        class="preview-image cursor-pointer w-32" />
+                    <br v-if="message.image_path" />
+                    <a v-if="message.image_path" :href="message.image_path" target="_blank">
+                        <img :src="message.image_path" alt="Image preview" width="100" />
+                    </a>
+                    <div v-if="isMessageUpdated(message)">
+                        Edited: {{ formatDate(message.updated_at) }}
+                    </div>
                 </td>
             </tr>
         </tbody>
@@ -31,13 +36,19 @@ export default {
             default: () => [],
         },
     },
+    computed: {
+        
+    },
     methods: {
         sortBy(field) {
             this.$emit("sort", field);
         },
         openImage(imagePath) {
             window.open(imagePath, "_blank");
-        }
+        },
+        isMessageUpdated(msg) {
+            return msg.created_at !== msg.updated_at;
+        },
     },
 };
 </script>
