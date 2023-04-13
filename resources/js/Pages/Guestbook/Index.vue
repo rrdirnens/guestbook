@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white shadow-md rounded-lg p-6 mx-auto my-auto max-w-lg">
+    <div class="bg-white shadow-md rounded-lg p-6 mx-auto my-auto max-w-4xl">
         <guestbook-form @message-created="updateMessages"></guestbook-form>
         <message-table :messages="messages" @sort="sortMessages"></message-table>
         <pagination v-if="pagination" :pagination="pagination" @change-page="fetchMessages"></pagination>

@@ -1,17 +1,17 @@
 <template>
-  <form class="space-y-4 mb-8" @submit.prevent="submitForm">
+  <form class="space-y-4 mb-8" @submit.prevent="submitForm($event)">
     <!-- Name -->
     <div>
       <label for="name" class="block text-sm font-medium text-gray-700">Name:</label>
-      <input type="text" id="name" v-model="formData.name"
-        :readonly="initialMessage" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md" />
+      <input type="text" id="name" v-model="formData.name" :readonly="initialMessage"
+        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md" />
     </div>
 
     <!-- Email -->
     <div>
       <label for="email" class="block text-sm font-medium text-gray-700">Email:</label>
-      <input type="email" id="email" v-model="formData.email"
-        :readonly="initialMessage" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md" />
+      <input type="email" id="email" v-model="formData.email" :readonly="initialMessage"
+        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md" />
     </div>
 
     <!-- Message -->
@@ -43,7 +43,7 @@
 </template>
   
 <script>
-import { useForm } from "@inertiajs/vue3";
+import { router, useForm, usePage } from "@inertiajs/vue3";
 import axios from "axios";
 
 export default {
@@ -62,7 +62,7 @@ export default {
       name: initialMessage ? initialMessage.name : "",
       email: initialMessage ? initialMessage.email : "",
       message: initialMessage ? initialMessage.message : "",
-      image: initialMessage ? initialMessage.image : null
+      image: initialMessage ? initialMessage.image_path : null
     });
 
 
@@ -72,7 +72,8 @@ export default {
       formData.image = event.target.files[0];
     }
 
-    async function submitForm() {
+    async function submitForm(event) {
+      event.preventDefault();
 
       // Create a new FormData instance
       const form = new FormData();
@@ -85,18 +86,17 @@ export default {
         form.append(key, formData[key]);
       }
 
-      let callMethod;
       let endpoint;
+
       if (initialMessage) {
-        callMethod = 'put';
         endpoint = `/guestbook/${initialMessage.id}`;
+        form.append('_method', 'put');
       } else {
-        callMethod = 'post';
         endpoint = '/guestbook';
       }
 
       try {
-        const response = await axios[callMethod](endpoint, form, {
+        const response = await axios.post(endpoint, form, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },

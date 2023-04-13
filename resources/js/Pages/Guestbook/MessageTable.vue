@@ -20,8 +20,14 @@
                         <img :src="message.image_path" alt="Image preview" width="100" />
                     </a>
                     <div v-if="isMessageUpdated(message)">
-                        Edited: {{ formatDate(message.updated_at) }}
+                        edited
+                        <!-- Edited: {{ formatDate(message.updated_at) }} -->
                     </div>
+                </td>
+                <td>
+                    <Link :href="'/guestbook/'+message.id+'/edit'">EDIT</Link>
+                    <br>
+                    <Link :href="'/guestbook/'+message.id" method="delete" as="button">REMOVE</Link>
                 </td>
             </tr>
         </tbody>
@@ -29,12 +35,17 @@
 </template>
 
 <script>
+import { Link } from '@inertiajs/vue3'
+
 export default {
     props: {
         messages: {
             type: Array,
             default: () => [],
         },
+    },
+    components: {
+        Link,
     },
     computed: {
         

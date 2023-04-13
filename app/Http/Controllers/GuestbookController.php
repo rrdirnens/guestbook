@@ -85,16 +85,20 @@ class GuestbookController extends Controller
     // Update the specified guestbook message in storage
     public function update(Request $request, $id)
     {
-        Log::info('Update function triggered, request:', $request->all());
+        Log::info('Update function triggered, id:');
+        Log::info($id);
+        Log::info('Update function triggered, request:');
+        Log::info($request->all());
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
             'email' => 'required|email|max:255',
             'message' => 'required|max:1000',
-            'image' => 'nullable|image|max:4096|mimes:jpg,jpeg,png',
+            'image' => 'nullable|image|max:4096|mimes:jpg,jpeg,png'
             // 'captcha' => 'required|captcha',
         ]);
 
         if ($validator->fails()) {
+            Log::info('Validation failed:', $validator->errors()->all());
             $errors = $validator->errors();
             $input = $request->all();
 
@@ -105,6 +109,8 @@ class GuestbookController extends Controller
             ])->withViewData(['errors' => $errors, 'input' => $input]);
         }
 
+        Log::info('validation passed');
+
         $message = GuestbookMessage::findOrFail($id);
 
         /** 
@@ -114,7 +120,11 @@ class GuestbookController extends Controller
          * 2) the message is less than 5 minutes old
          */
         if ($message->ip_address != $request->ip() || $message->created_at->diffInMinutes() > 5) {
-            return redirect()->route('guestbook.index')->with('error', 'You are not authorized to update this message!');
+            Log::info('User not authorized to update message (IP address mismatch or time difference))');
+            return Inertia::render('Guestbook/Index', [
+                'message' => GuestbookMessage::findOrFail($id),
+            ])->withViewData(['errors' => 'You are not authorized to update this message!']);
+           
         }
 
         $message->name = $request->input('name');
@@ -130,17 +140,24 @@ class GuestbookController extends Controller
 
         $message->save();
 
+        Log::info('Message updated successfully!');
+
         return redirect()->route('guestbook.index')->with('success', 'Message updated successfully!');
     }
 
     // Remove the specified guestbook message from storage
     public function destroy($id)
     {
+        Log::info('deleting');
+        Log::info($id);
         $message = GuestbookMessage::findOrFail($id);
 
         // Check if the current user is authorized to delete the message
         if ($message->ip_address != request()->ip() || $message->created_at->diffInMinutes() > 5) {
-            return redirect()->route('guestbook.index')->with('error', 'You are not authorized to delete this message!');
+            Log::info('User not authorized to delete message (IP address mismatch or time difference)');
+            return Inertia::render('Guestbook/Index', [
+                'message' => GuestbookMessage::findOrFail($id),
+            ])->withViewData(['errors' => 'You are not authorized to delete this message!']);
         }
 
         $message->delete();
