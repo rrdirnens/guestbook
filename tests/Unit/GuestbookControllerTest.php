@@ -2,18 +2,28 @@
 
 namespace Tests\Unit;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Storage;
-use Inertia\Testing\AssertableInertia;
-use Illuminate\Http\UploadedFile;
-use App\Models\GuestbookMessage;
+use Tests\TestCase;
 use Illuminate\Support\Str;
-use Tests\TestCase; // https://laracasts.com/discuss/channels/testing/default-user-factory-gives-invalidargumentexception-unknown-formatter-name 
+use App\Models\GuestbookMessage;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
+use Inertia\Testing\AssertableInertia;
+use Illuminate\Support\Facades\Storage;
+use App\Services\GuestbookMessageService;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class GuestbookControllerTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
+
+    protected $guestbookMessageService;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->guestbookMessageService = $this->app->make(GuestbookMessageService::class);
+    }
 
     public function test_index_displays_guestbook_messages()
     {
@@ -27,7 +37,6 @@ class GuestbookControllerTest extends TestCase
         $response->assertStatus(200);
 
         // Assert that the messages are part of the response
-        // we need to use assertSee() instead of assertViewHas() because the messages are not part of the view. Because we are using Inertia, the messages are part of the response, not the view.
         foreach ($messages as $message) {
             $response->assertSee($message->name);
             $response->assertSee($message->email);
@@ -107,6 +116,10 @@ class GuestbookControllerTest extends TestCase
 
         $message = GuestbookMessage::latest('id')->first();
 
-        Storage::disk('public')->assertExists(Str::replaceFirst('storage/', '', $message->image_path));
+        Log::info('Full fake file path: ' . $message->image_path);
+        
+        // Ensure the image path is valid and the file exists in the fake storage
+        $this->assertNotNull($message->image_path);
+        Storage::assertExists('public/guestbook_images/' . basename($message->image_path));
     }
 }
