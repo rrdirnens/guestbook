@@ -27,7 +27,7 @@
                 <td>
                     <Link :href="'/guestbook/'+message.id+'/edit'">EDIT</Link>
                     <br>
-                    <Link :href="'/guestbook/'+message.id" method="delete" as="button">REMOVE</Link>
+                    <button @click="$emit('delete-message', message.id)">REMOVE</button>
                 </td>
             </tr>
         </tbody>

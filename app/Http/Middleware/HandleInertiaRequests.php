@@ -4,6 +4,8 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Illuminate\Support\Facades\Log;
+
 
 class HandleInertiaRequests extends Middleware
 {
@@ -34,10 +36,18 @@ class HandleInertiaRequests extends Middleware
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    public function share(Request $request): array
+    public function share(Request $request)
     {
         return array_merge(parent::share($request), [
             'csrf_token' => csrf_token(),
+            'flash' => function () use ($request) {
+                return [
+                    'success' => fn () => $request->session()->get('success'),
+                    'error'   => fn () => $request->session()->get('error'),
+                    'message'  => fn () => $request->session()->get('message'),
+                    'notice'  => fn () => $request->session()->get('notice'),
+                ];
+            },
         ]);
     }
 }
