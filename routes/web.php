@@ -38,15 +38,18 @@ Route::get('/guestbook/create', [GuestbookController::class, 'create'])
     ->name('guestbook.create');
 Route::post('/guestbook', [GuestbookController::class, 'store'])
     ->name('guestbook.store');
-Route::get('/guestbook/{id}/edit', [GuestbookController::class, 'edit'])
-    ->name('guestbook.edit');
 
-// This next POST route is a workaround for the fact that Inertia doesn't support PUT requests. I am sending a POST request with a hidden _method field set to PUT. This is a temporary solution until Inertia supports PUT requests or I become smarter and blessed with more time to figure this out. But the payoff is simply following the conventions of the HTTP protocol, which is a good thing, but not a priority right now.
-Route::post('/guestbook/{id}', [GuestbookController::class, 'update'])
-    ->name('guestbook.update');
 
-Route::delete('/guestbook/{id}', [GuestbookController::class, 'destroy'])
-    ->name('guestbook.destroy');
+Route::middleware(['edit.access'])->group(function () {
+    Route::get('/guestbook/{id}/edit', [GuestbookController::class, 'edit'])
+        ->name('guestbook.edit');
+    // This next POST route is a workaround for the fact that Inertia doesn't support PUT requests. I am sending a POST request with a hidden _method field set to PUT. This is a temporary solution until Inertia supports PUT requests or I become smarter and blessed with more time to figure this out. But the payoff is simply following the conventions of the HTTP protocol, which is a good thing, but not a priority right now.
+    Route::post('/guestbook/{id}', [GuestbookController::class, 'update'])
+        ->name('guestbook.update');
+    Route::delete('/guestbook/{id}', [GuestbookController::class, 'destroy'])
+        ->name('guestbook.destroy');
+});
+
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/admin', [UserController::class, 'index'])

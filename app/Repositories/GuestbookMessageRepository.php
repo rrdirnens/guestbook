@@ -2,8 +2,8 @@
 
 namespace App\Repositories;
 
-use App\Models\GuestbookMessage;
 use App\Repositories\GuestbookMessageRepositoryInterface;
+use App\Models\GuestbookMessage;
 
 
 class GuestbookMessageRepository implements GuestbookMessageRepositoryInterface

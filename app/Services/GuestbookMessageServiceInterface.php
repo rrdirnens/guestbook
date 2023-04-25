@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Http\Requests\GuestbookMessageRequest;
+use App\Models\GuestbookMessage;
 use Illuminate\Http\Request;
 
 interface GuestbookMessageServiceInterface
@@ -27,19 +29,19 @@ interface GuestbookMessageServiceInterface
     /**
      * Create a new guestbook message.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\GuestbookMessageRequest $request
      * @return \App\Models\GuestbookMessage
      */
-    public function storeMessage(Request $request);
+    public function storeMessage(GuestbookMessageRequest $request);
 
     /**
      * Update a guestbook message.
      *
      * @param  \App\Models\GuestbookMessage  $message
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\GuestbookMessageRequest $request
      * @return void
      */
-    public function updateMessage($message, Request $request);
+    public function updateMessage($message, GuestbookMessageRequest $request);
 
     /**
      * Delete a guestbook message.

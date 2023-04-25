@@ -84,11 +84,6 @@ class GuestbookController extends Controller
     {
         $message = $this->service->getMessageById($id);
 
-        // TODO move to form request 
-        if ($message->ip_address != $request->ip() || $message->created_at->diffInMinutes() > 5) {
-            return Redirect::back()->with('error','You are not authorized to update this message!');
-        }
-
         $this->service->updateMessage($message, $request);
 
         return redirect()->route('guestbook.index')->with('success', 'Message updated successfully!');
@@ -103,11 +98,6 @@ class GuestbookController extends Controller
     public function destroy($id)
     {
         $message = $this->service->getMessageById($id);
-
-        // TODO move to form request 
-        if ($message->ip_address != request()->ip() || $message->created_at->diffInMinutes() > 5) {
-            return to_route('guestbook.index')->with('error', 'You are not authorized to delete this message!');
-        }
 
         $this->service->deleteMessage($message);
 

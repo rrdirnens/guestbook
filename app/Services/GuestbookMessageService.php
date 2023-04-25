@@ -2,10 +2,11 @@
 
 namespace App\Services;
 
+use App\Http\Requests\GuestbookMessageRequest;
 use App\Services\GuestbookMessageServiceInterface;
 use App\Repositories\GuestbookMessageRepository;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
 
 class GuestbookMessageService implements GuestbookMessageServiceInterface
 {
@@ -49,10 +50,10 @@ class GuestbookMessageService implements GuestbookMessageServiceInterface
     /**
      * Create a new guestbook message.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \App\Http\Requests\GuestbookMessageRequest  $request
      * @return \App\Models\GuestbookMessage
      */
-    public function storeMessage(Request $request)
+    public function storeMessage(GuestbookMessageRequest $request)
     {
         $data = $request->validated();
         $data['ip_address'] = $request->ip();
@@ -69,10 +70,10 @@ class GuestbookMessageService implements GuestbookMessageServiceInterface
      * Update a guestbook message.
      *
      * @param  \App\Models\GuestbookMessage  $message
-     * @param  \Illuminate\Http\Request  $request
-     * @return void
+     * @param \App\Http\Requests\GuestbookMessageRequest  $request
+     *      * @return void
      */
-    public function updateMessage($message, Request $request)
+    public function updateMessage($message, GuestbookMessageRequest $request)
     {
         $data = $request->validated();
 
