@@ -1,16 +1,18 @@
 <template>
-    <div class="bg-white shadow-md rounded-lg p-6 mx-auto my-auto max-w-4xl">
+    <div class="space-y-6">
         <flash-messages></flash-messages>
         <guestbook-form></guestbook-form>
-        <message-table :messages="messages" @sort="sortMessages" @delete-message="deleteMessage"></message-table>
-        <pagination v-if="pagination" :pagination="pagination" @change-page="fetchMessages"></pagination>
+        <message-table :messages="messages" @sort="sortMessages" @delete-message="deleteMessage"
+            class="bg-white shadow-md rounded-lg overflow-hidden"></message-table>
+        <pagination v-if="pagination" :pagination="pagination" @change-page="fetchMessages"
+            class="flex justify-center items-center"></pagination>
     </div>
 </template>
 
 <script>
 import GuestbookForm from "./GuestbookForm.vue";
-import MessageTable from "./MessageTable.vue";
-import FlashMessages from "@/Shared/FlashMessages.vue";
+import MessageTable from "@/Components/MessageTable.vue";
+import FlashMessages from "@/Components/FlashMessages.vue";
 import Pagination from "./Pagination.vue";
 import { reactive, toRefs, watchEffect } from "vue";
 import { usePage, router } from "@inertiajs/vue3";

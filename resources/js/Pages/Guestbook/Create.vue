@@ -8,7 +8,7 @@
   
   <script>
   import GuestbookForm from './GuestbookForm.vue';
-  import FlashMessages from '@/Shared/FlashMessages.vue';
+  import FlashMessages from '@/Components/FlashMessages.vue';
 
   
   export default {
