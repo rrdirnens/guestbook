@@ -7,7 +7,7 @@
   </template>
   
   <script>
-  import GuestbookForm from './GuestbookForm.vue';
+  import GuestbookForm from '@/Components/GuestbookForm.vue';
   import FlashMessages from '@/Components/FlashMessages.vue';
 
   

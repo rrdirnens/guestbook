@@ -44,6 +44,44 @@ class GuestbookControllerTest extends TestCase
         }
     }
 
+    /**
+     * @dataProvider sortingScenarios
+     */
+    public function test_index_displays_sorted_guestbook_messages($sortField, $sortDirection)
+    {
+        // Create some guestbook messages
+        $messages = GuestbookMessage::factory()->count(5)->create();
+
+        // Call the index method with sorting parameters
+        $response = $this->get(route('guestbook.index', [
+            'sort' => $sortField,
+            'direction' => $sortDirection,
+        ]));
+
+        // Assert that the response has a successful status
+        $response->assertStatus(200);
+
+        // Assert that the messages are part of the response
+        $sortedMessages = $messages->sortBy([$sortField => $sortDirection])->values();
+        for ($i = 0; $i < $sortedMessages->count(); $i++) {
+            $response->assertSeeInOrder([
+                $sortedMessages[$i]->name,
+                $sortedMessages[$i]->email,
+                $sortedMessages[$i]->message,
+            ]);
+        }
+    }
+    
+    public function sortingScenarios()
+    {
+        return [
+            ['name', 'asc'],
+            ['name', 'desc'],
+            ['created_at', 'asc'],
+            ['created_at', 'desc'],
+        ];
+    }
+
     public function test_create_displays_the_create_form()
     {
         // Call the create method
@@ -117,7 +155,7 @@ class GuestbookControllerTest extends TestCase
         $message = GuestbookMessage::latest('id')->first();
 
         Log::info('Full fake file path: ' . $message->image_path);
-        
+
         // Ensure the image path is valid and the file exists in the fake storage
         $this->assertNotNull($message->image_path);
         Storage::assertExists('public/guestbook_images/' . basename($message->image_path));
