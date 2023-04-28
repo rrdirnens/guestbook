@@ -2,12 +2,12 @@
     <div class="space-y-6">
         <flash-messages></flash-messages>
         <guestbook-form></guestbook-form>
-        <message-table :messages="messages" :sortDirection="direction" @sort="sortMessages" @delete-message="deleteMessage"
+        <pagination v-if="pagination" :links="pagination_links" @change-page="fetchMessages"
+            class="flex justify-center items-center"></pagination>
+        <message-table v-if="messages.length" :messages="messages" :sortDirection="direction" @sort="sortMessages" @delete-message="deleteMessage"
             class="bg-white shadow-md rounded-lg overflow-hidden">
         </message-table>
 
-        <pagination v-if="pagination" :pagination="pagination" @change-page="fetchMessages"
-            class="flex justify-center items-center"></pagination>
     </div>
 </template>
 
@@ -32,8 +32,9 @@ export default {
         const sort = urlParams.get('sort') || 'created_at';
         const direction = urlParams.get('direction') || 'desc';
         const state = reactive({
-            messages: props.messages,
-            pagination: props.pagination,
+            messages: props.messages.data,
+            pagination: props.messages.total > props.messages.per_page,
+            pagination_links: props.messages.links,
             errors: props.errors,
             sort: sort,
             direction: direction,
@@ -41,7 +42,9 @@ export default {
 
         watchEffect(() => {
             console.log(props);
+            console.log(props.messages.data);
         });
+
         async function fetchMessagesHandler(url) {
             router.get(url);
         }

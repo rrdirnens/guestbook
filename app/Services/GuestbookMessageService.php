@@ -32,7 +32,9 @@ class GuestbookMessageService implements GuestbookMessageServiceInterface
      */
     public function getAllMessages($sortField, $sortDirection)
     {
-        return $this->repository->getAllMessages($sortField, $sortDirection);
+        $messages = $this->repository->getAllMessages($sortField, $sortDirection);
+        return $messages->appends(['sort' => $sortField, 'direction' => $sortDirection]);
+
     }
 
     /**

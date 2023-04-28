@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\GuestbookMessageServiceInterface;
+use Illuminate\Pagination\LengthAwarePaginator;
 use App\Http\Requests\GuestbookMessageRequest;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Http\Request;
@@ -22,16 +23,16 @@ class GuestbookController extends Controller
      * Display a listing of the guestbook messages.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Inertia\Response
+     * @return \Inertia\Response 
      */
     public function index(Request $request)
     {
-        $sortField = $request->input('sort', 'created_at');
+        $sortField = $request->input('sort', 'created_at'); 
         $sortDirection = $request->input('direction', 'desc');
         $messages = $this->service->getAllMessages($sortField, $sortDirection);
 
         return Inertia::render('Guestbook/Index', [
-            'messages' => $messages->items(),
+            'messages' => $messages,
         ])->with('success', 'Showing index!');
     }
 
